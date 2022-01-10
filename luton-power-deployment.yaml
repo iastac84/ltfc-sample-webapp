@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ltfcpwercrt
+  namespace: luton
+  labels:
+    app: ltfcpwercrt
+spec:
+  replicas: 2
+  selector:
+      matchLabels:
+        app: ltfcpwercrt
+  template:
+    metadata:
+      labels:
+        app: ltfcpwercrt
+    spec:
+      containers:
+      - name: ltfcpwercrt
+        image: nginx
+        volumeMounts:
+        - name: powermount
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: powermount
+        azureFile:
+          secretName: azure-secret
+          shareName: devpwrshare01
+          readOnly: false
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ltfcpwercrt
+  namespace: luton
+spec:
+  selector:
+    app: ltfcpwercrt
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ltfcpwercrt
+  namespace: luton
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          service:
+            name: ltfcpwercrt
+            port:
+              number: 80
+        pathType: Exact
+
