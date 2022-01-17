@@ -6,7 +6,7 @@ metadata:
   labels:
     app: ltfckenny
 spec:
-  replicas: 2
+  replicas: 1
   selector:
       matchLabels:
         app: ltfckenny
@@ -19,13 +19,22 @@ spec:
       - name: ltfckenny
         image: nginx
         volumeMounts:
-        - name: kennymount
-          mountPath: /usr/share/nginx/html
+        - name: kenny-index
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index-kenny.html
+        - name: images
+          mountPath: /usr/share/nginx/html/images
+          subPath: images
       volumes:
-      - name: kennymount
+      - name: kenny-index
         azureFile:
           secretName: azure-secret
-          shareName: devkrshare01
+          shareName: isnginxlt
+          readOnly: false
+      - name: images
+        azureFile:
+          secretName: azure-secret
+          shareName: isnginxlt
           readOnly: false
 
 ---

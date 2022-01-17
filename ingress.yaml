@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/backend-path-prefix: "/"
+  generation: 1
+  name: ltfc-ingress
+  namespace: luton
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /kenny
+        pathType: Exact
+        backend:
+          service:
+            name: ltfckenny
+            port:
+              number: 80
+      - path: /power
+        pathType: Exact
+        backend:
+          service:
+            name: ltfcpwercrt
+            port:
+              number: 80
+      - path: /wembley
+        pathType: Exact
+        backend:
+          service:
+            name: ltfcwembley
+            port:
+              number: 80
+      - path: /scenes
+        pathType: Exact
+        backend:
+          service:
+            name: ltfcscenes
+            port:
+              number: 80
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: ltfcscenes
+            port:
+              number: 80

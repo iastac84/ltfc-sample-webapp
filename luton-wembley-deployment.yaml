@@ -1,33 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ltfcpwercrt
+  name: ltfcwembley
   namespace: luton
   labels:
-    app: ltfcpwercrt
+    app: ltfcwembley
 spec:
-  replicas: 2
+  replicas: 1
   selector:
       matchLabels:
-        app: ltfcpwercrt
+        app: ltfcwembley
   template:
     metadata:
       labels:
-        app: ltfcpwercrt
+        app: ltfcwembley
     spec:
       containers:
-      - name: ltfcpwercrt
+      - name: ltfcwembley
         image: nginx
         volumeMounts:
-        - name: power-index
+        - name: wembley-index
           mountPath: /usr/share/nginx/html/index.html
-          subPath: index-power.html
+          subPath: index-wembley.html
         - name: images
           mountPath: /usr/share/nginx/html/images
           subPath: images
-
       volumes:
-      - name: power-index
+      - name: wembley-index
         azureFile:
           secretName: azure-secret
           shareName: isnginxlt
@@ -43,34 +42,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ltfcpwercrt
+  name: ltfcwembley
   namespace: luton
 spec:
   selector:
-    app: ltfcpwercrt
+    app: ltfcwembley
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
-
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ltfcpwercrt
-  namespace: luton
-  annotations:
-    kubernetes.io/ingress.class: azure/application-gateway
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /
-        backend:
-          service:
-            name: ltfcpwercrt
-            port:
-              number: 80
-        pathType: Exact
 
